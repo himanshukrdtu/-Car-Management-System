@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { AuthContext } from "../context/AuthContext";
+import axios from "axios";
 import "./Login.css";
 
 function Login() {
@@ -15,24 +16,27 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-  
+
     try {
-      const response = await fetch("http://localhost:8000/api/v1/user/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        localStorage.setItem("token", data.token);
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/user/login",
+        { email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,  
+        }
+      );
+
+      const data = response.data;
+
+      if (response.status === 200) {
+        
         localStorage.setItem("user", JSON.stringify(data.user));
-        console.log("data.token is", data);
-        login(data.user); // Updating user in context
-        console.log("user saved in context in login ", data ,data.user);
+
+        login(data.user);  
+
         setIsLoggedIn(true);
         alert("Login successful!");
         navigate("/");
@@ -43,12 +47,10 @@ function Login() {
       setError("Network error or server not responding");
     }
   };
-  
-  // Use useEffect to log updated user state
+
   useEffect(() => {
     console.log("Updated user in context:", user);
-  }, [user]); // Logs only when user state changes
-  
+  }, [user]);
 
   return (
     <div className="login-container">

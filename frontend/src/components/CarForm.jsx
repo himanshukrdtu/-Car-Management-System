@@ -20,7 +20,7 @@ function CarForm() {
   const [loggedInUser, setLoggedInUser] = useState(null);
 
   useEffect(() => {
-    // Retrieve user from localStorage if not from context
+   
     const storedUser = JSON.parse(localStorage.getItem('user'));
     if (storedUser) {
       setLoggedInUser(storedUser);
@@ -59,11 +59,11 @@ function CarForm() {
     formData.append('price', price);
     formData.append('tags', tagsArray);
 
-    // Append the user ID from context or localStorage
+    
     if (user) {
-      formData.append('user', user._id); // If user is available in context
+      formData.append('user', user._id);  
     } else if (loggedInUser) {
-      formData.append('user', loggedInUser._id); // If user is available in localStorage
+      formData.append('user', loggedInUser._id); 
     } else {
       setMessage('User is not logged in.');
       return;
@@ -78,6 +78,7 @@ function CarForm() {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        withCredentials: true, 
       });
 
       setMessage('Car details submitted successfully!');
@@ -92,7 +93,7 @@ function CarForm() {
     return (
       <div className="CarForm">
         <h1>Please log in to add a car</h1>
-        <button onClick={() => navigate('/login')}>Login</button> {/* Use navigate here */}
+        <button onClick={() => navigate('/login')}>Login</button>  
       </div>
     );
   }

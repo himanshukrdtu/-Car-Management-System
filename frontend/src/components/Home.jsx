@@ -1,25 +1,26 @@
 import React, { useEffect } from 'react';
 import './Home.css';  
 import { useUser } from "../context/UserContext";
-import { useAuth } from "../context/AuthContext";  // Assuming you need to check login status as well
+import { useAuth } from "../context/AuthContext";
+import Cookies from 'js-cookie';  
 
 const Home = () => {
   const { user, login } = useUser();
-  const { isLoggedIn, setIsLoggedIn } = useAuth();  // To access login state
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
 
   useEffect(() => {
-    // Check localStorage for token and user data on component mount
-    const token = localStorage.getItem('token');
-    const userFromStorage = localStorage.getItem('user');
+    
+     
+     const userFromStorage = localStorage.getItem('user'); 
 
-    if (token && userFromStorage) {
-      // If both token and user exist, update the global user context
+    if (userFromStorage) {
+     
       login(JSON.parse(userFromStorage));
-      setIsLoggedIn(true);  // Set logged-in status to true
+      setIsLoggedIn(true);
     } else {
-      setIsLoggedIn(false);  // Set logged-in status to false if no token is found
+      setIsLoggedIn(false);
     }
-  }, []); // Dependency array ensures login is only called once on mount
+  }, []);
 
   console.log("user in home", user);
 

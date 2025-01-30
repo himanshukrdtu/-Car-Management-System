@@ -5,7 +5,7 @@ import UserCarCard from './UserCarCard';
 import './UserCar.css';
 import { useUser } from "../context/UserContext";
 import { useCars } from "../context/CarContext";
-import { useAuth } from "../context/AuthContext";  // Import the useAuth hook
+import { useAuth } from "../context/AuthContext";   
   
 
 const UserCar = () => {
@@ -14,6 +14,8 @@ const UserCar = () => {
   const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
 
+
+  
   useEffect(() => {
     const fetchCars = async () => {
       console.log(user);
@@ -45,7 +47,10 @@ const UserCar = () => {
   const handleDelete = async (carId) => {
     console.log("Attempting to delete car with ID:", carId);
     try {
-      await axios.delete(`http://localhost:8000/api/v1/car/deleteCar/${carId}`);
+       
+      await axios.delete(`http://localhost:8000/api/v1/car/deleteCar/${carId}`, {
+        withCredentials: true,  
+      });
       updateUserCars(userCars.filter(car => car._id !== carId));
       console.log("Car deleted:", carId);
     } catch (error) {
@@ -57,7 +62,7 @@ const UserCar = () => {
     return (
       <div className="CarForm">
         <h1>Please log in to view cars added by you</h1>
-        <button onClick={() => navigate('/login')}>Login</button> {/* Use navigate here */}
+        <button onClick={() => navigate('/login')}>Login</button>  
       </div>
     );
   }

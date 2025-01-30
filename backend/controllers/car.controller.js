@@ -111,13 +111,12 @@ export const updateCarDetails = async (req, res) => {
     try {
         const { title, description, tags, car_id } = req.body;
         const images = req.files?.map(file => file.path);
-
-        // Check if car_id is provided
+ 
         if (!car_id) {
             return res.status(400).json({ message: 'Car ID is required' });
         }
 
-        // Find the car to update
+      
         const car = await Car.findById(car_id);
         if (!car) {
             return res.status(404).json({ message: 'Car not found' });
@@ -125,12 +124,12 @@ export const updateCarDetails = async (req, res) => {
 
         console.log("Car found");
 
-        // Update car details
+      
         car.title = title || car.title;
         car.description = description || car.description;
         car.tags = tags || car.tags;
 
-        // Update images if provided
+   
         if (images && images.length > 0) {
             if (images.length > 10) {
                 return res.status(400).json({ message: 'Maximum 10 images allowed' });
@@ -138,7 +137,7 @@ export const updateCarDetails = async (req, res) => {
             car.images = [...images];
         }
 
-        // Save the updated car
+       
         await car.save();
         console.log("i am update car2");
 
@@ -149,4 +148,4 @@ export const updateCarDetails = async (req, res) => {
     }
 };
 
- 
+  

@@ -47,21 +47,26 @@ const UpdateCarDetails = () => {
       formData.append('images', image);
     });
 
-    try {
-      const response = await axios.put(
-        `http://localhost:8000/api/v1/car/updateCar/${state.car._id}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-      alert('Car details updated successfully!');
-      navigate(`/view-your-cars`);
+    
+    
+      try {
+        
+        const response = await axios.put(
+            `http://localhost:8000/api/v1/car/updateCar/${state.car._id}`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                withCredentials: true, 
+            }
+        );
+    
+        alert('Car details updated successfully!');
+        navigate(`/view-your-cars`);
     } catch (error) {
-      console.error('Error updating car:', error);
-      setErrorMessage('Error updating car details.');
+        console.error('Error updating car:', error);
+        setErrorMessage('Error updating car details.');
     }
   };
 

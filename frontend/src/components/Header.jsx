@@ -10,7 +10,6 @@ function Header() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
     localStorage.removeItem('user');
     logout();
     setIsLoggedIn(false);
@@ -27,7 +26,7 @@ function Header() {
           <li><Link to="/">Home</Link></li>
           <li><Link to="/add-car"  >Add Car</Link></li>
           <li><Link to="/view-all-cars">View All Cars</Link></li>
-          <li><Link to="/view-your-cars" >View Your Cars</Link></li>  {/* Updated with handleViewYourCarsClick */}
+          <li><Link to="/view-your-cars" >View Your Cars</Link></li>  
           {isLoggedIn ? (
             <>
               <li>Welcome , {user ? user.fullname : 'User'}</li>
