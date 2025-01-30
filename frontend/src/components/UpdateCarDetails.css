@@ -1,0 +1,68 @@
+.update-car-form {
+    width: 100%;
+    max-width: 600px; 
+    margin: 0 auto;  
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    border-radius: 8px;
+  }
+  
+  .update-car-form h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .update-car-form form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .update-car-form label {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #555;
+  }
+  
+  .update-car-form input,
+  .update-car-form textarea {
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  .update-car-form textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  .update-car-form input[type="file"] {
+    padding: 0;
+    border: none;
+  }
+  
+  .update-car-form button {
+    padding: 12px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .update-car-form button:hover {
+    background-color: #45a049;
+  }
+  
+  .update-car-form .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: -8px;
+  }
+  

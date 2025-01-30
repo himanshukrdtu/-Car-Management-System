@@ -1,0 +1,14 @@
+.car-details-page {
+    padding: 20px;
+  }
+  
+  .car-images img {
+    width: 200px;
+    height: auto;
+    margin-right: 10px;
+  }
+  
+  button {
+    margin-bottom: 10px;
+  }
+  
