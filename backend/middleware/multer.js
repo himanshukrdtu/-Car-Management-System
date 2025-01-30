@@ -1,8 +1,17 @@
 import multer from 'multer';
-import cloudinary from '../utils/cloudinary.js'; // Import the configured Cloudinary
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from '../config/cloudinary.js';
 
-// Configure multer to use memory storage (to send the image directly to Cloudinary)
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage }).array('photos', 10); // Allow multiple images, max 10 photos
+const storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: 'cars', // Folder in Cloudinary
+      format: async (req, file) => 'png', // Convert all uploads to PNG
+      allowedFormats: ['jpg', 'png', 'jpeg'], // Allowed file formats
+      public_id: (req, file) => file.originalname.split('.')[0], // Set public ID based on original name
+    },
+  });
 
-export default upload; // Export multer middleware so it can be used in other files
+const upload = multer({ storage });
+
+export default upload;

@@ -58,7 +58,7 @@ const UpdateCarDetails = () => {
         }
       );
       alert('Car details updated successfully!');
-      navigate(`/user-cars`);
+      navigate(`/view-your-cars`);
     } catch (error) {
       console.error('Error updating car:', error);
       setErrorMessage('Error updating car details.');

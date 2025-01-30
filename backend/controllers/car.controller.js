@@ -1,84 +1,28 @@
-import multer from 'multer';
-import cloudinary from '../utils/cloudinary.js';
+
 import { Car } from '../models/car.model.js';
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage }).array('photos', 10);
-
+ 
 export const addCar = async (req, res) => {
+
+    console.log("i am add car" );
     try {
-        console.log("Code tested");
+        const { title, description, car_type, company, dealer, year, price, user, tags } = req.body;
+        const images = req.files?.map(file => file.path);
+    
+        if (images.length > 10) return res.status(400).json({ message: 'Maximum 10 images allowed' });
+    
+        const car = new Car({ title, description, images, tags, car_type, company, dealer, year, price, user });
+        console.log(req.body);
+        console.log("i am add car1" );
+        // console.log("i am add car2",req.files);
+        await car.save();
+        console.log("i am add car2" );
+          
 
-        upload(req, res, async (err) => {
-            if (err) {
-                return res.status(500).json({
-                    message: "Error uploading the images.",
-                    success: false
-                });
-            }
-
-            const { title, description, car_type, company, dealer, year, price, tags, user } = req.body;
-
-            if (!title || !description || !car_type || !company || !dealer || !year || !price || !user) {
-                return res.status(400).json({
-                    message: "All fields are required.",
-                    success: false
-                });
-            }
-
-            if (req.files && req.files.length > 0) {
-                const photoUrls = [];
-
-                for (let i = 0; i < req.files.length; i++) {
-                    const file = req.files[i];
-
-                    await new Promise((resolve, reject) => {
-                        cloudinary.uploader.upload_stream(
-                            { resource_type: 'auto' },
-                            (error, result) => {
-                                if (error) {
-                                    reject(error);
-                                } else {
-                                    photoUrls.push(result.secure_url);
-                                    resolve();
-                                }
-                            }
-                        ).end(file.buffer);
-                    });
-                }
-
-                const car = await Car.create({
-                    title,
-                    description,
-                    car_type,
-                    company,
-                    dealer,
-                    year,
-                    price,
-                    tags: tags || [],
-                    images: photoUrls,
-                    user
-                });
-
-                return res.status(201).json({
-                    message: "Car added successfully with photos.",
-                    success: true,
-                    car,
-                });
-            } else {
-                return res.status(400).json({
-                    message: "No image files uploaded.",
-                    success: false
-                });
-            }
-        });
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            message: "Something went wrong.",
-            success: false
-        });
-    }
+        res.status(201).json({ message: 'Car added successfully', car });
+      } catch (error) {
+        res.status(500).json({ message: 'Error adding car', error: error.message });
+      }
 };
 
 export const getAllCars = async (req, res) => {
@@ -163,59 +107,46 @@ export const deleteCar = async (req, res) => {
 };
 
 export const updateCarDetails = async (req, res) => {
+    console.log("i am update car");
     try {
         const { title, description, tags, car_id } = req.body;
-        const images = req.files ? req.files : [];
+        const images = req.files?.map(file => file.path);
 
+        // Check if car_id is provided
         if (!car_id) {
-            return res.status(400).json({ message: 'Car ID is required', success: false });
+            return res.status(400).json({ message: 'Car ID is required' });
         }
-         
+
+        // Find the car to update
         const car = await Car.findById(car_id);
         if (!car) {
-            return res.status(404).json({ message: 'Car not found', success: false });
-        }
-        if(car){
-            console.log("Car found");
+            return res.status(404).json({ message: 'Car not found' });
         }
 
+        console.log("Car found");
+
+        // Update car details
         car.title = title || car.title;
         car.description = description || car.description;
         car.tags = tags || car.tags;
 
-        if (images.length > 0) {
-            const photoUrls = [];
-
-            for (let i = 0; i < images.length; i++) {
-                const file = images[i];
-                console.log("img" , i);
-                await new Promise((resolve, reject) => {
-                    cloudinary.uploader.upload_stream(
-                        { resource_type: 'auto' },
-                        (error, result) => {
-                            if (error) {
-                                reject(error);
-                            } else {
-                                photoUrls.push(result.secure_url);
-                                resolve();
-                            }
-                        }
-                    ).end(file.buffer);
-                });
+        // Update images if provided
+        if (images && images.length > 0) {
+            if (images.length > 10) {
+                return res.status(400).json({ message: 'Maximum 10 images allowed' });
             }
+            car.images = [...images];
+        }
 
-            car.images = [...photoUrls];
-         }
-
+        // Save the updated car
         await car.save();
+        console.log("i am update car2");
 
-        return res.status(200).json({
-            message: 'Car details updated successfully',
-            success: true,
-            car
-        });
+        res.status(200).json({ message: 'Car details updated successfully', car });
     } catch (error) {
         console.error('Error updating car:', error);
-        return res.status(500).json({ message: 'Server error', success: false });
+        res.status(500).json({ message: 'Error updating car', error: error.message });
     }
 };
+
+ 

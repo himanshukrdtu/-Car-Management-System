@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useUser } from "../context/UserContext"; 
+import { useAuth } from "../context/AuthContext";  // Import the useAuth hook
+import { useNavigate } from 'react-router-dom';  // Import useNavigate from react-router-dom
 import './CarForm.css';
 
 function CarForm() {
-  
-  const { user } = useUser();
+  const { isLoggedIn, user } = useAuth();  // Get the logged-in status and user from context
+  const navigate = useNavigate();  // Initialize navigate function
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [images, setImages] = useState([]);
@@ -16,6 +17,15 @@ function CarForm() {
   const [price, setPrice] = useState('');
   const [tags, setTags] = useState('');
   const [message, setMessage] = useState('');
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
+  useEffect(() => {
+    // Retrieve user from localStorage if not from context
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) {
+      setLoggedInUser(storedUser);
+    }
+  }, []);
 
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -32,8 +42,8 @@ function CarForm() {
       return;
     }
 
-    if (!user) {
-      setMessage('You must be logged in to add a car.');
+    if (isNaN(year) || isNaN(price)) {
+      setMessage('Year and Price must be valid numbers.');
       return;
     }
 
@@ -47,11 +57,20 @@ function CarForm() {
     formData.append('dealer', dealer);
     formData.append('year', year);
     formData.append('price', price);
-    formData.append('tags', JSON.stringify(tagsArray));
-    formData.append('user', user._id);
+    formData.append('tags', tagsArray);
+
+    // Append the user ID from context or localStorage
+    if (user) {
+      formData.append('user', user._id); // If user is available in context
+    } else if (loggedInUser) {
+      formData.append('user', loggedInUser._id); // If user is available in localStorage
+    } else {
+      setMessage('User is not logged in.');
+      return;
+    }
 
     images.forEach((image) => {
-      formData.append('photos', image);
+      formData.append('images', image);
     });
 
     try {
@@ -68,6 +87,15 @@ function CarForm() {
       console.error(error);
     }
   };
+
+  if (!isLoggedIn && !loggedInUser) {
+    return (
+      <div className="CarForm">
+        <h1>Please log in to add a car</h1>
+        <button onClick={() => navigate('/login')}>Login</button> {/* Use navigate here */}
+      </div>
+    );
+  }
 
   return (
     <div className="CarForm">

@@ -5,10 +5,13 @@ import UserCarCard from './UserCarCard';
 import './UserCar.css';
 import { useUser } from "../context/UserContext";
 import { useCars } from "../context/CarContext";
+import { useAuth } from "../context/AuthContext";  // Import the useAuth hook
+  
 
 const UserCar = () => {
   const { userCars, updateUserCars } = useCars();
   const { user } = useUser();
+  const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,6 +52,15 @@ const UserCar = () => {
       console.error("Error deleting car:", error.response?.data || error);
     }
   };
+
+  if (!isLoggedIn) {
+    return (
+      <div className="CarForm">
+        <h1>Please log in to view cars added by you</h1>
+        <button onClick={() => navigate('/login')}>Login</button> {/* Use navigate here */}
+      </div>
+    );
+  }
 
   return (
     <div className="car-container">

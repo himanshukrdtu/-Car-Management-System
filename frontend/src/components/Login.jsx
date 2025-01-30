@@ -29,10 +29,10 @@ function Login() {
   
       if (response.ok) {
         localStorage.setItem("token", data.token);
-  
+        localStorage.setItem("user", JSON.stringify(data.user));
         console.log("data.token is", data);
         login(data.user); // Updating user in context
-        localStorage.setItem("user", JSON.stringify(data.user));
+        console.log("user saved in context in login ", data ,data.user);
         setIsLoggedIn(true);
         alert("Login successful!");
         navigate("/");
